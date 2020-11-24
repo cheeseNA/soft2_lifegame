@@ -3,7 +3,7 @@
 #include <string.h>
 #include <unistd.h>  // sleep()関数を使う
 
-#include "gol.h"
+// #include "gol.h"
 
 void my_init_cells(const int height, const int width, int cell[height][width],
                    FILE *fp);
@@ -75,7 +75,7 @@ void my_init_cells(const int height, const int width, int cell[height][width],
     } else {
       int x, y;
       sscanf(buf, "%d %d%*1[\n]", &x, &y);
-      printf("%d %d\n", x, y);
+      // printf("%d %d\n", x, y);
       cell[y][x] = 1;
     }
   }
