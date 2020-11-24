@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>  // sleep()関数を使う
 
 #include "gol.h"
@@ -32,14 +33,14 @@ int main(int argc, char **argv) {
   } else if (argc == 2) {
     FILE *lgfile;
     if ((lgfile = fopen(argv[1], "r")) != NULL) {
-      init_cells(height, width, cell, lgfile);  // ファイルによる初期化
+      my_init_cells(height, width, cell, lgfile);  // ファイルによる初期化
     } else {
       fprintf(stderr, "cannot open file %s\n", argv[1]);
       return EXIT_FAILURE;
     }
     fclose(lgfile);
   } else {
-    init_cells(height, width, cell, NULL);  // デフォルトの初期値を使う
+    my_init_cells(height, width, cell, NULL);  // デフォルトの初期値を使う
   }
 
   my_print_cells(fp, 0, height, width, cell);  // 表示する
@@ -55,6 +56,29 @@ int main(int argc, char **argv) {
   }
 
   return EXIT_SUCCESS;
+}
+
+void my_init_cells(const int height, const int width, int cell[height][width],
+                   FILE *fp) {
+  if (fp == NULL) {
+    if ((fp = fopen("default.lif", "r")) == NULL) {
+      fprintf(stderr, "cannot open file default.lif\n");
+      return;
+    }
+  }
+
+  const size_t bufsize = 100;
+  char buf[bufsize];
+  while (fgets(buf, bufsize, fp) != NULL) {
+    if (buf[0] == '#') {
+      continue;
+    } else {
+      int x, y;
+      sscanf(buf, "%d %d%*1[\n]", &x, &y);
+      printf("%d %d\n", x, y);
+      cell[y][x] = 1;
+    }
+  }
 }
 
 void my_print_cells(FILE *fp, int gen, const int height, const int width,
