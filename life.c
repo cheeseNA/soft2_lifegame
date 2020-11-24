@@ -8,6 +8,8 @@ void my_init_cells(const int height, const int width, int cell[height][width],
                    FILE *fp);
 void my_print_cells(FILE *fp, int gen, const int height, const int width,
                     int cell[height][width]);
+int my_count_adjacent_cells(int h, int w, const int height, const int width,
+                            int cell[height][width]);
 void my_update_cells(const int height, const int width,
                      int cell[height][width]);
 
@@ -79,4 +81,21 @@ void my_print_cells(FILE *fp, int gen, const int height, const int width,
   fprintf(fp, "+\n");
 
   fflush(fp);
+}
+
+int my_count_adjacent_cells(int h, int w, const int height, const int width,
+                            int cell[height][width]) {
+  int dx[8] = {-1, 0, 1, 1, 1, 0, -1, -1};
+  int dy[8] = {-1, -1, -1, 0, 1, 1, 1, 0};
+
+  int ret = 0;
+  for (int i = 0; i < 8; i++) {
+    if (0 <= w + dx[i] && w + dx[i] < width && 0 <= h + dy[i] &&
+        h + dy[i] < height) {
+      if (cell[h + dy[i]][w + dx[i]]) {
+        ret++;
+      }
+    }
+  }
+  return ret;
 }
