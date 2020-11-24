@@ -4,6 +4,13 @@
 
 #include "gol.h"
 
+void my_init_cells(const int height, const int width, int cell[height][width],
+                   FILE *fp);
+void my_print_cells(FILE *fp, int gen, const int height, const int width,
+                    int cell[height][width]);
+void my_update_cells(const int height, const int width,
+                     int cell[height][width]);
+
 int main(int argc, char **argv) {
   FILE *fp = stdout;
   const int height = 40;
@@ -33,17 +40,43 @@ int main(int argc, char **argv) {
     init_cells(height, width, cell, NULL);  // デフォルトの初期値を使う
   }
 
-  print_cells(fp, 0, height, width, cell);  // 表示する
-  sleep(1);                                 // 1秒休止
+  my_print_cells(fp, 0, height, width, cell);  // 表示する
+  sleep(1);                                    // 1秒休止
 
   /* 世代を進める*/
   for (int gen = 1;; gen++) {
-    update_cells(height, width, cell);          // セルを更新
-    print_cells(fp, gen, height, width, cell);  // 表示する
-    sleep(1);                                   // 1秒休止する
+    update_cells(height, width, cell);             // セルを更新
+    my_print_cells(fp, gen, height, width, cell);  // 表示する
+    sleep(1);                                      // 1秒休止する
     fprintf(fp, "\e[%dA",
             height + 3);  // height+3 の分、カーソルを上に戻す(壁2、表示部1)
   }
 
   return EXIT_SUCCESS;
+}
+
+void my_print_cells(FILE *fp, int gen, const int height, const int width,
+                    int cell[height][width]) {
+  fprintf(fp, "generation = %d\n", gen);
+  fprintf(fp, "+");
+  for (int x = 0; x < width; x++) fprintf(fp, "-");
+  fprintf(fp, "+\n");
+
+  for (int y = 0; y < height; y++) {
+    fprintf(fp, "|");
+    for (int x = 0; x < width; x++) {
+      if (cell[y][x]) {
+        fprintf(fp, "\e[31m#\e[0m");
+      } else {
+        fprintf(fp, " ");
+      }
+    }
+    fprintf(fp, "|\n");
+  }
+
+  fprintf(fp, "+");
+  for (int x = 0; x < width; x++) fprintf(fp, "-");
+  fprintf(fp, "+\n");
+
+  fflush(fp);
 }
