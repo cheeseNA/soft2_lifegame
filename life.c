@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 
   /* 世代を進める*/
   for (int gen = 1;; gen++) {
-    update_cells(height, width, cell);             // セルを更新
+    my_update_cells(height, width, cell);          // セルを更新
     my_print_cells(fp, gen, height, width, cell);  // 表示する
     sleep(1);                                      // 1秒休止する
     fprintf(fp, "\e[%dA",
@@ -98,4 +98,33 @@ int my_count_adjacent_cells(int h, int w, const int height, const int width,
     }
   }
   return ret;
+}
+
+void my_update_cells(const int height, const int width,
+                     int cell[height][width]) {
+  int tmp[height][width];
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      tmp[y][x] = 0;
+    }
+  }
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      int adjacent = my_count_adjacent_cells(y, x, height, width, cell);
+      if (cell[y][x]) {
+        if (2 <= adjacent && adjacent <= 3) {
+          tmp[y][x] = 1;
+        }
+      } else {
+        if (adjacent == 3) {
+          tmp[y][x] = 1;
+        }
+      }
+    }
+  }
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      cell[y][x] = tmp[y][x];
+    }
+  }
 }
