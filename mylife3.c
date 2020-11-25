@@ -93,8 +93,12 @@ void my_init_cells(const int height, const int width, int cell[height][width],
             endfile = 1;
             break;
           } else if (buf[i] == '$') {
+            if (lenbuffer == 0) {
+              lenbuffer = 1;
+            }
             x = 0;
-            y++;
+            y += lenbuffer;
+            lenbuffer = 0;
           } else if (buf[i] == 'b' || buf[i] == 'o') {
             if (lenbuffer == 0) {
               lenbuffer = 1;
